@@ -29,9 +29,9 @@ const Main = () => {
           <>
             <div className="greet">
               <p>
-                <span>你好，小圆</span>
+                <span>hello, yuan</span>
               </p>
-              <p>我能帮你做些什么？</p>
+              <p>How can I help you?</p>
             </div>
             <div className="cards">
               <div className="card">

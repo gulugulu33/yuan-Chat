@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import "./Main.css";
 import { assets } from "../../assets/assets";
 import { Context } from "../../context/Context";
@@ -15,8 +15,19 @@ const Main = () => {
     handleKeyPress,
     openVoiceSearch,
     voiceSearch,
-    recordingAnimation
+    recordingAnimation,
+    messages,
+    isGenerating,
+    abortGeneration,
+    chatContainerRef,
+    handleScroll
   } = useContext(Context);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <div className="main">
@@ -34,19 +45,19 @@ const Main = () => {
               <p>How can I help you?</p>
             </div>
             <div className="cards">
-              <div className="card">
+              <div className="card" onClick={() => onSent("建议一些即将自驾游时可以去的美丽景点")}>
                 <p>建议一些即将自驾游时可以去的美丽景点</p>
                 <img src={assets.compass_icon} alt="" />
               </div>
-              <div className="card">
-                <p>简要总结一下“城市规划”这个概念</p>
+              <div className="card" onClick={() => onSent("简要总结一下\"城市规划\"这个概念")}>
+                <p>简要总结一下"城市规划"这个概念</p>
                 <img src={assets.bulb_icon} alt="" />
               </div>
-              <div className="card">
+              <div className="card" onClick={() => onSent("为我们的团队拓展活动集思广益")}>
                 <p>为我们的团队拓展活动集思广益</p>
                 <img src={assets.message_icon} alt="" />
               </div>
-              <div className="card">
+              <div className="card" onClick={() => onSent("提升以下代码的可读性")}>
                 <p>提升以下代码的可读性</p>
                 <img src={assets.code_icon} alt="" />
               </div>
@@ -54,21 +65,36 @@ const Main = () => {
           </>
         ) : (
           <div className="result">
-            <div className="result-title">
-              <img src={assets.user_icon} alt="" />
-              <p>{recentPrompt}</p>
-            </div>
-            <div className="result-data">
-              <img src={assets.gemini_icon} alt="" />
-              {loading ? (
-                <div className="loader">
-                  <hr />
-                  <hr />
-                  <hr />
+            <div className="chat-messages" ref={chatContainerRef} onScroll={handleScroll}>
+              {messages.map((message, index) => (
+                <div
+                  key={message.id || index}
+                  className={`message-item ${message.role === 'assistant' ? 'ai-message' : 'user-message'}`}
+                >
+                  <img 
+                    src={message.role === 'assistant' ? assets.gemini_icon : assets.user_icon} 
+                    alt="" 
+                    className="message-avatar"
+                  />
+                  <div className="message-content">
+                    {message.status === 'generating' && !message.content ? (
+                      <div className="loader">
+                        <hr />
+                        <hr />
+                        <hr />
+                      </div>
+                    ) : (
+                      <p dangerouslySetInnerHTML={{ __html: message.content }}></p>
+                    )}
+                    {message.status === 'aborted' && (
+                      <span className="message-status">已中断</span>
+                    )}
+                    {message.status === 'failed' && (
+                      <span className="message-status error">生成失败</span>
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <p dangerouslySetInnerHTML={{ __html: resultData }}></p>
-              )}
+              ))}
             </div>
           </div>
         )}
@@ -92,7 +118,15 @@ const Main = () => {
                   recordingAnimation ? "recording" : ""
                 }`}
               />
-              {input ? (
+              {isGenerating ? (
+                <img 
+                  src={assets.send_icon} 
+                  alt="" 
+                  onClick={abortGeneration}
+                  className="stop-icon"
+                  title="停止生成"
+                />
+              ) : input ? (
                 <img onClick={() => onSent()} src={assets.send_icon} alt="" />
               ) : null}
             </div>

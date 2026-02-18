@@ -1,54 +1,40 @@
 import React, { useContext, useState } from 'react'
-import './SideBard.css'
+import './SideBar.css'
 import { assets } from '../../assets/assets'
 import { Context } from '../../context/Context';
 
 const SideBar = () => {
     const [extended, setExtended] = useState(true);
-    const { onSent, prevPrompt, setRecentPrompt, newChat, setPrevprompt } = useContext(Context);
-
-    const loadPrompt = async (prompt) => {
-        setRecentPrompt(prompt);
-        await onSent(prompt);
-    }
-
-    const deletePrompt = (index) => {
-        const updatedPrevPrompt = [...prevPrompt];
-        updatedPrevPrompt.splice(index, 1);
-        setPrevprompt(updatedPrevPrompt);
-    }
-
-    let lastClickedTime = 0;
-
-    const handleDoubleClick = (index) => {
-        const currentTime = new Date().getTime();
-        if (currentTime - lastClickedTime < 300) {
-            deletePrompt(index);
-        }
-        lastClickedTime = currentTime;
-    }
+    const { sessions, currentSessionId, createNewSession, loadSession, deleteSession } = useContext(Context);
 
     return (
         <div className='sidebar'>
             <div className="top">
                 <img className='menu' src={assets.menu_icon} alt="" onClick={() => setExtended(!extended)} />
-                <div onClick={() => newChat()} className="new-chat">
+                <div onClick={() => createNewSession()} className="new-chat">
                     <img src={assets.plus_icon} alt="" />
-                    {extended ? <p>New Chart</p> : null}
+                    {extended ? <p>New Chat</p> : null}
                 </div>
                 {extended &&
                     <div className="recent">
                         <p className='recent-title'>Recent</p>
-                        {prevPrompt.map((item, index) => (
+                        {sessions.map((session) => (
                             <div
-                                key={index}
-                                onClick={() => loadPrompt(item)}
-                                onDoubleClick={() => handleDoubleClick(index)}
-                                className="recent-entry"
+                                key={session.id}
+                                onClick={() => loadSession(session.id)}
+                                className={`recent-entry ${session.id === currentSessionId ? 'active' : ''}`}
                             >
                                 <img src={assets.message_icon} alt="" />
-                                <p>{item.slice(0, 18)}...</p>
-                                <img src={assets.trash} onClick={() => deletePrompt(index)} alt="" />
+                                <p>{session.title.slice(0, 18)}...</p>
+                                <img 
+                                    src={assets.trash} 
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        deleteSession(session.id);
+                                    }} 
+                                    alt="" 
+                                    className="delete-icon"
+                                />
                             </div>
                         ))}
                     </div>

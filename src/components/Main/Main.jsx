@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import "./Main.css";
 import { assets } from "../../assets/assets";
 import { Context } from "../../context/Context";
+import MarkdownRenderer from "../MarkdownRenderer/MarkdownRenderer";
 
 const Main = () => {
   const {
@@ -20,8 +21,15 @@ const Main = () => {
     isGenerating,
     abortGeneration,
     chatContainerRef,
-    handleScroll
+    handleScroll,
+    updateSessionMessages
   } = useContext(Context);
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInput(value);
+    updateSessionMessages(messages, { input: value });
+  };
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -84,7 +92,9 @@ const Main = () => {
                         <hr />
                       </div>
                     ) : (
-                      <p dangerouslySetInnerHTML={{ __html: message.content }}></p>
+                      <div className="markdown-content">
+                        <MarkdownRenderer content={message.content} />
+                      </div>
                     )}
                     {message.status === 'aborted' && (
                       <span className="message-status">已中断</span>
@@ -102,7 +112,7 @@ const Main = () => {
         <div className="main-bottom">
           <div className="search-box">
             <input
-              onChange={(e) => setInput(e.target.value)}
+              onChange={handleInputChange}
               value={input}
               type="text"
               onKeyDown={handleKeyPress}

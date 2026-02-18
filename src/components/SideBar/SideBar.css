@@ -48,9 +48,23 @@
     border-radius: 50px;
     color: #282828;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
 .sidebar .recent-entry:hover{
     background-color: #e2e6eb;
+}
+.sidebar .recent-entry.active{
+    background-color: #d0d7de;
+    color: #0284c7;
+}
+.sidebar .recent-entry .delete-icon{
+    margin-left: auto;
+    opacity: 0;
+    transition: opacity 0.2s;
+    cursor: pointer;
+}
+.sidebar .recent-entry:hover .delete-icon{
+    opacity: 1;
 }
 
 .sidebar .bottom{

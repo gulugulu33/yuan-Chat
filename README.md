@@ -1,4 +1,4 @@
-# yuan-Chat
+<img width="2878" height="1686" alt="image" src="https://github.com/user-attachments/assets/fffbc2a5-b11a-40d5-966b-21cae8971296" /># yuan-Chat
 
 一个基于 React + Node.js 构建的现代化 AI 对话应用，采用流式输出技术，提供流畅的实时对话体验。
 
@@ -324,5 +324,5 @@ const options = {
 ## 技术参考
 
 - [流式对话渲染模块设计](https://www.yuque.com/guluguluwater-qkq0t/otcxaz/pihgy9hz1r2tpfth)
-- [讯飞星火 MaaS API](https://www.xfyun.cn/)
+- [讯飞星火 MaaS API](https://maas.xfyun.cn/modelService)
 - [ReadableStream API](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)

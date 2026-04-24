@@ -83,7 +83,7 @@ PORT=3001
 ```
 
 获取讯飞星火 API Key：
-1. 访问 [讯飞开放平台](https://www.xfyun.cn/)
+1. 访问 [讯飞开放平台](https://maas.xfyun.cn/modelService)
 2. 注册账号并创建应用
 3. 获取 API Key
 
